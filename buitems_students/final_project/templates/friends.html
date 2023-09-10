@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}
+Find Students
+{% endblock %}
+
+{% block main %}
+{% if students %}
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">NAME</th>
+            <th scope="col">MATCHING INTERESTS</th>
+            <th scope="col">LINK TO PROFILE</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for student in students %}
+        <tr>
+            <th scope="row">{{ loop.index }}</th>
+            <td>{{ student["FirstName"] }}</td>
+            <td>{{ student["Interests"] }}</td>
+            <td>
+                <form action="/profile" method="post">
+                    <input type="hidden" name="cmsid" value="{{ student['CMSID'] }}">
+                    <button class="btn btn-primary" type="submit">View Profile</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+<a href="/">Go back to Homepage</a>
+{% endif %}
+{% endblock %}

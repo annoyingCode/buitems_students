@@ -1,0 +1,394 @@
+{% extends "layout.html" %}
+{% block title %}
+Register
+{% endblock %}
+
+{% block main %}
+
+<!-- if user has not entered any mandatory input or did not select any interest -->
+{% if data_check_not or interests_not %}
+<section style="background-color: #eee;">
+    <form class="needs-validation" action="/register" method="post" enctype="multipart/form-data" novalidate
+        onsubmit="return validatePassword()">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <p>Your Profile Picture</p>
+                            <label class="form-label" for="picture">
+                                <img src="../static/images/students/placeholder.png" alt="avatar"
+                                    class="rounded-circle img-fluid" style="width: 150px;">
+                            </label>
+                            <input type="file" class="form-control" name="picture" id="picture">
+                        </div>
+                        <div class="card mb-4 mb-lg-0">
+                            <div class="card-body p-0">
+                                <ul class="list-group list-group-flush rounded-3">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                        <i class="fab fa-twitter fa-lg" style="color: #55acee;"></i>
+                                        <input class="form-control form-control-sm" style="width: 60%" type="url"
+                                            name="social-media" id="twitter" placeholder="Your Twitter Profile Link">
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                        <i class="fab fa-linkedin fa-lg" style="color: #3b5998;"></i>
+                                        <input class="form-control form-control-sm" style="width: 60%" type="url"
+                                            name="social-media" id="linkedin" placeholder="Your LinkedIn Profile Link">
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">First Name</p>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input class="form-control form-control-sm" type="text" name="fname" id="fname"
+                                        value="{{ data_check['fname'] }}" aria-label="first-name" required>
+                                    <div class="invalid-feedback">
+                                        Please enter first name
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Last Name</p>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input class="form-control form-control-sm" type="text" name="lname" id="lname"
+                                        value="{{ data_check['lname'] }}" aria-label="last-name" required>
+                                    <div class="invalid-feedback">
+                                        Please enter last name
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">CMS ID</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <input class="form-control form-control-sm" type="text" name="cmsid" id="cmsid"
+                                        value="{{ data_check['cmsid'] }}" aria-label="cms" maxlength="5" required>
+                                    <div class="invalid-feedback">
+                                        Please enter CMS ID
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Program</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <!-- <input class="form-control form-control-sm" type="text" name="dept" id="dept"
+                                        placeholder="Enter the Program that you are enrolled in" aria-label="program"> -->
+                                    <select class="form-select" name="program" id="program" aria-label="program"
+                                        required>
+                                        <option value="" disabled selected>Select the Program that you are enrolled in
+                                        </option>
+                                        {% for program in programs %}
+                                        {% if 'program' in data_check %}
+                                        {% if data_check['program'] == program['ProgramName'] %}
+                                        <option value="{{ program['ProgramName'] }}" selected>{{ program['ProgramName']
+                                            }}
+                                        </option>
+                                        <!-- end nested if -->
+                                        {% endif %}
+
+                                        {% else %}
+                                        <option value="{{ program['ProgramName'] }}">{{ program['ProgramName'] }}
+                                        </option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select your enrolled program.
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Contact Email</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <input class="form-control form-control-sm" type="email" name="email" id="email"
+                                        value="{{ data_check['email'] }}" aria-label="email" required>
+                                    <div class="invalid-feedback">
+                                        Please enter valid email
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Password</p>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input class="form-control form-control-sm" type="password" name="password"
+                                        id="password" aria-label="password" required>
+                                    <div class="invalid-feedback">
+                                        Please enter password
+                                    </div>
+                                    <div id="message"></div>
+                                    <ul id="requirements">
+                                        <li>At least 8 characters</li>
+                                        <li>At least one lowercase letter</li>
+                                        <li>At least one uppercase letter</li>
+                                        <li>At least one digit</li>
+                                        <li>At least one special character (!, #, \, $, %, &)</li>
+                                    </ul>
+
+                                </div>
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Confirm Password</p>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input class="form-control form-control-sm" type="password" name="cpassword"
+                                        id="cpassword" aria-label="confirm-password" required>
+                                    <div class="invalid-feedback">
+                                        Please confirm password
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card mb-4 mb-md-0">
+                                <div class="card-body">
+                                    <h1>
+                                        Your Interests
+                                    </h1>
+                                    <div class="form-check form-check-inline">
+                                        <div class="container">
+                                            <div class="row">
+                                                {% for interest in interests_not %}
+                                                <div style="text-align: left;" class="col-sm-4 col-lg-3">
+                                                    <input class="form-check-input" type="checkbox" name="interest"
+                                                        id="{{ interest['InterestName'] }}"
+                                                        value="{{ interest['InterestID'] }}" onclick="return check()"
+                                                        required>
+                                                    <label class="form-check-label"
+                                                        for="{{ interest['InterestName'] }}">
+                                                        {{ interest["InterestName"] }}
+                                                    </label>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <p id="error-message"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-bottom: 25px;">Register</button>
+    </form>
+</section>
+
+{% else %}
+<section style="background-color: #eee;">
+    <form class="needs-validation" name="registrationForm" action="/register" method="post"
+        enctype="multipart/form-data" novalidate>
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <p>Your Profile Picture</p>
+                            <label class="form-label" for="picture">
+                                <img src="../static/images/students/placeholder.png" alt="avatar"
+                                    class="rounded-circle img-fluid" style="width: 150px;">
+                            </label>
+                            <input type="file" class="form-control" name="picture" id="picture">
+                        </div>
+                    </div>
+                    <div class="card mb-4 mb-lg-0">
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush rounded-3">
+                                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                    <i class="fab fa-twitter fa-lg" style="color: #55acee;"></i>
+                                    <input class="form-control form-control-sm" style="width: 60%" type="url"
+                                        name="social-media" id="twitter" placeholder="Your Twitter Profile Link">
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                    <i class="fab fa-linkedin fa-lg" style="color: #3b5998;"></i>
+                                    <input class="form-control form-control-sm" style="width: 60%" type="url"
+                                        name="social-media" id="linkedin" placeholder="Your LinkedIn Profile Link">
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">First Name</p>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input class="form-control form-control-sm" type="text" name="fname" id="fname"
+                                        aria-label="first-name" required>
+                                    <div class="invalid-feedback">
+                                        Please enter your first name!
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Last Name</p>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input class="form-control form-control-sm" type="text" name="lname" id="lname"
+                                        aria-label="last-name" required>
+                                    <div class="invalid-feedback">
+                                        Please enter your last name!
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">CMS ID</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <input class="form-control form-control-sm" type="text" name="cmsid" id="cmsid"
+                                        aria-label="cms" maxlength="5" required>
+                                    <div class="invalid-feedback">
+                                        Please enter your CMS ID.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Program</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <!-- <input class="form-control form-control-sm" type="text" name="dept" id="dept"
+                                        placeholder="Enter the Program that you are enrolled in" aria-label="program"> -->
+                                    <select class="form-select" name="program" id="program" aria-label="program"
+                                        required>
+                                        <option value="" selected disabled>Select the Program that you are enrolled in
+                                        </option>
+                                        {% for program in programs %}
+                                        <option value="{{ program['ProgramName'] }}">{{ program['ProgramName'] }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select your enrolled program.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Contact Email</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <input class="form-control form-control-sm" type="email" name="email" id="email"
+                                        aria-label="email" required>
+                                    <div class="invalid-feedback">
+                                        Please enter a valid email address
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Password</p>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input class="form-control form-control-sm" type="password" name="password"
+                                        id="password" aria-label="password" required>
+                                    <div class="invalid-feedback">
+                                        Please enter your password
+                                    </div>
+                                    <div id="message"></div>
+                                    <ul id="requirements">
+                                        <li>At least 8 characters</li>
+                                        <li>At least one lowercase letter</li>
+                                        <li>At least one uppercase letter</li>
+                                        <li>At least one digit</li>
+                                        <li>At least one special character (!, #, \, $, %, &)</li>
+                                    </ul>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Confirm Password</p>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input class="form-control form-control-sm" type="password" name="cpassword"
+                                        id="cpassword" aria-label="confirm-password" required>
+                                    <div class="invalid-feedback">
+                                        Please confirm your password
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card mb-4 mb-md-0">
+                                <div class="card-body">
+                                    <h1 style="font-family: Source Code Pro">
+                                        Your Interests
+                                    </h1>
+                                    <div class="form-check form-check-inline">
+                                        <div class="container">
+                                            <div class="row">
+                                                {% for interest in interests %}
+                                                <div style="text-align: left;" class="col-sm-4 col-lg-3">
+                                                    <input class="form-check-input" type="checkbox" name="interest"
+                                                        id="{{ interest['InterestName'] }}"
+                                                        value="{{ interest['InterestID'] }}" onclick="return check()"
+                                                        required>
+                                                    <label class="form-check-label"
+                                                        for="{{ interest['InterestName'] }}">
+                                                        {{ interest["InterestName"] }}
+                                                    </label>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <p id="error-message"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-bottom: 25px;">Register</button>
+    </form>
+</section>
+{% endif %}
+
+{% raw %}
+<script src="/static/password_validate.js"></script>
+{% endraw %}
+
+{% endblock %}

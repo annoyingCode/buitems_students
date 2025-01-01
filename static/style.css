@@ -1,0 +1,45 @@
+/* Colors for BUITEMS STUDENTS */
+nav .navbar-brand {
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+nav .navbar-brand .blue {
+    color: #537fbe;
+}
+
+nav .navbar-brand .orange {
+    color: #ed8618;
+}
+
+/* Password is valid/invalid */
+#message {
+    text-align: left;
+    margin-top: 1em;
+    font-size: 0.8em;
+}
+
+/* Password requirements (ul) */
+#requirements {
+    list-style-type: none;
+    text-align: left;
+    padding: 0;
+    margin: 0;
+}
+
+/* Password reuirement items */
+#requirements li {
+    font-size: 0.65em;
+}
+
+/* Email of other students on "profile.html" */
+.mail-to {
+    color: #ed8618;
+    text-decoration: none;
+}
+
+/* Email of other students on "profile.html" */
+.mail-to:hover {
+    color: #537fbe;
+    text-decoration: underline;
+}

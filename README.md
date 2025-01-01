@@ -1,6 +1,6 @@
 # BUITEMS STUDENTS: FLASK APPLICATION
 
-### Video Demo: https://www.youtube.com/watch?v=X0hiYcdEiE8
+<img src="./assets/cs50x.gif" width="500px" height="300px" />
 
 ## DESCRIPTION
 
